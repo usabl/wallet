@@ -1,32 +1,39 @@
 import React, { Component } from 'react';
-// import CryptoJS from 'crypto-js';
-import Web3 from 'web3';
-const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
+import PropTypes from 'prop-types';
+import { web3 } from '../constants/web3';
+import encrypt from 'crypto-js/hmac-sha256';
+import { db } from '../constants/firebase';
 
 class Login extends Component {
+  static propTypes = {
+    updateTitle: PropTypes.func.isRequired
+  };
+
   state = {
     username: '',
     walletPassword: ''
   };
 
+  setUser;
+
+  findUserOnFirebase = async (username, password) =>
+    await db
+      .collection('users')
+      .where('username', '==', username)
+      .where('password', '==', password)
+      .get()
+      .then(collection => collection.docs.map(doc => doc.data()))
+      .then(users => users[0]);
+
   handleSubmit = async (username, walletPassword) => {
     try {
-      // let wallet = ethers.Wallet.createRandom();
-      let wallet = web3.eth.accounts.create();
-      let jsonWallet = await wallet.encrypt(walletPassword, {});
-      // let backendPassword = CryptoJS.HmacSHA256(
-      //   username,
-      //   walletPassword
-      // ).toString();
-      // let data = JSON.parse(localStorage.getItem('wallet_data'));
-      // if (data[username] === backendPassword) {
-      //   console.log('Yayy success');
-      // } else {
-      //   console.log('jsonWallet', jsonWallet);
-      //   console.log('backPass', backendPassword);
-      // }
-      this.props.updateTitle(jsonWallet.address);
+      let backendPassword = encrypt(username, walletPassword).toString();
+      let user = await this.findUserOnFirebase(username, backendPassword);
+      console.log('ss', user);
+
+      this.props.setUser(user);
     } catch (err) {
+      // revert frontend update if something fails here
       console.log('err', err);
     }
   };

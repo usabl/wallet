@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-// import CryptoJS from 'crypto-js';
-import Web3 from 'web3';
-const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
+import { db } from '../constants/firebase';
+import { web3 } from '../constants/web3';
+import encrypt from 'crypto-js/hmac-sha256';
 
 class ComponentName extends PureComponent {
-  static propTypes = {};
+  static propTypes = {
+    updateTitle: PropTypes.func.isRequired
+  };
 
   state = {
     username: '',
@@ -13,25 +15,40 @@ class ComponentName extends PureComponent {
     title: 'Welcome to Usabl'
   };
 
+  // find: function(username, password) {
+  //     let matchingUsers = this.users.filter(
+  //         u => u.username === username && u.password === password);
+  //     return matchingUsers[0];
+  // },
+
+  // addUser: function(username, password, jsonWallet, success, error) {
+  //     let existingUser = this.users.filter(
+  //         u => u.username === username)[0];
+  //     if (!existingUser) {
+  //         let user = {username, password, jsonWallet};
+  //         this.users.push(user);
+  //         success(user);
+  //     }
+  //     else
+  //         error("Username unavailable: " + username);
+  // }
+
+  addUserToFirebase = (username, password, jsonWallet) => {
+    let user = { username, password, jsonWallet };
+    db.collection('users').add(user);
+  };
+
   handleSubmit = async (username, walletPassword) => {
+    let wallet = web3.eth.accounts.create();
+    let jsonWallet = await wallet.encrypt(walletPassword, {});
+
+    // optimistic frontend update
+    this.props.updateTitle(jsonWallet);
     try {
-      let wallet = web3.eth.accounts.create();
-      // can add entropy .create([entropy])
-      let jsonWallet = await wallet.encrypt(walletPassword, {});
-      // let backendPassword = CryptoJS.HmacSHA256(
-      //   username,
-      //   walletPassword
-      // ).toString();
-
-      // localStorage.setItem(
-      //   'wallet_data',
-      //   JSON.stringify({ [username]: backendPassword })
-      // );
-      // console.log('jsonWallet', jsonWallet);
-      // console.log('wallet_public_key', wallet.mnemonic);
-
-      this.props.updateTitle(jsonWallet.address);
+      let backendPassword = encrypt(username, walletPassword).toString();
+      this.addUserToFirebase(username, backendPassword, jsonWallet);
     } catch (err) {
+      // revert frontend update if something fails here
       console.log('err', err);
     }
   };

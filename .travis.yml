@@ -3,9 +3,10 @@ env:
     - CC_TEST_REPORTER_ID=$TEST_REPORTER_ID
 language: node_js
 node_js:
-  - "node"
-script: 
+  - 'node'
+script:
   - yarn run test --coverage
+  - yarn run build
 before_install:
   - rm -rf *.lock node_modules
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.9.4
