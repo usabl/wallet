@@ -1,5 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+`;
 
 class Navbar extends PureComponent {
   static propTypes = { title: PropTypes.string.isRequired };
@@ -7,9 +15,9 @@ class Navbar extends PureComponent {
   render() {
     let { title } = this.props;
     return (
-      <header className="App-header">
-        <h1 className="App-title">{title}</h1>
-      </header>
+      <Wrapper>
+        <h1>{title}</h1>
+      </Wrapper>
     );
   }
 }

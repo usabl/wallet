@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import ethers from 'ethers';
-import CryptoJS from 'crypto-js';
+// import CryptoJS from 'crypto-js';
+import Web3 from 'web3';
+const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
 
 class Login extends Component {
   state = {
@@ -10,19 +11,21 @@ class Login extends Component {
 
   handleSubmit = async (username, walletPassword) => {
     try {
-      let wallet = ethers.Wallet.createRandom();
+      // let wallet = ethers.Wallet.createRandom();
+      let wallet = web3.eth.accounts.create();
       let jsonWallet = await wallet.encrypt(walletPassword, {});
-      let backendPassword = CryptoJS.HmacSHA256(
-        username,
-        walletPassword
-      ).toString();
-      let data = JSON.parse(localStorage.getItem('wallet_data'));
-      if (data[username] === backendPassword) {
-        console.log('Yayy success');
-      } else {
-        console.log('jsonWallet', jsonWallet);
-        console.log('backPass', backendPassword);
-      }
+      // let backendPassword = CryptoJS.HmacSHA256(
+      //   username,
+      //   walletPassword
+      // ).toString();
+      // let data = JSON.parse(localStorage.getItem('wallet_data'));
+      // if (data[username] === backendPassword) {
+      //   console.log('Yayy success');
+      // } else {
+      //   console.log('jsonWallet', jsonWallet);
+      //   console.log('backPass', backendPassword);
+      // }
+      this.props.updateTitle(jsonWallet.address);
     } catch (err) {
       console.log('err', err);
     }
@@ -33,7 +36,7 @@ class Login extends Component {
   render() {
     return (
       <div className="Login">
-        <p>Login</p>
+        <h2>Login</h2>
         <form
           onSubmit={e => {
             e.preventDefault();
