@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import ethers from 'ethers';
 import CryptoJS from 'crypto-js';
+import styled from 'styled-components';
+import { TextInputField } from 'evergreen-ui';
 
 class App extends Component {
   state = {
     username: '',
-    walletPassword: ''
+    walletPassword: '',
+    title: 'Welcome to React'
   };
 
   handleSubmit = async (username, walletPassword) => {
@@ -18,11 +20,8 @@ class App extends Component {
         username,
         walletPassword
       ).toString();
-
-      // sessionStorage['username'] = username;
-      // sessionStorage['jsonWallet'] = jsonWallet;
-
-      console.log('jsonWallet', jsonWallet);
+      console.log('jsonWallet', typeof jsonWallet);
+      this.setState(() => ({ title: jsonWallet }));
     } catch (err) {
       console.log('err', err);
     }
@@ -34,25 +33,24 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">{this.state.title}</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+
         <form
           onSubmit={e => {
             e.preventDefault();
             this.handleSubmit(this.state.username, this.state.walletPassword);
           }}
         >
-          <input
-            type="text"
+          <TextInputField
+            inputWidth="250px"
+            label="Username"
             placeholder="username"
             onChange={e => this.handleChange('username', e.target.value)}
           />
-          <input
-            type="text"
+          <TextInputField
+            inputWidth="250px"
+            label="Password"
             placeholder="password"
             onChange={e => this.handleChange('walletPassword', e.target.value)}
           />
