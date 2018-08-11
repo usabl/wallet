@@ -13,10 +13,11 @@ class Navbar extends PureComponent {
   static propTypes = { title: PropTypes.string.isRequired };
 
   render() {
-    let { title } = this.props;
+    let { title, balance } = this.props;
     return (
       <Wrapper>
         <h1>{title}</h1>
+        <h1>{balance}</h1>
       </Wrapper>
     );
   }
