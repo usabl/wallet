@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { db } from '../constants/firebase';
-import { web3 } from '../constants/web3';
+// import { web3 } from '../constants/web3';
 import encrypt from 'crypto-js/hmac-sha256';
 
 class ComponentName extends PureComponent {
@@ -39,7 +39,8 @@ class ComponentName extends PureComponent {
   };
 
   handleSubmit = async (username, walletPassword) => {
-    let wallet = web3.eth.accounts.create();
+    let wallet = this.props.web3.eth.accounts.create();
+
     let jsonWallet = await wallet.encrypt(walletPassword, {});
 
     // optimistic frontend update

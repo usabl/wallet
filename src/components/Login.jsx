@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { web3 } from '../constants/web3';
+// import { web3 } from '../constants/web3';
 import encrypt from 'crypto-js/hmac-sha256';
 import { db } from '../constants/firebase';
 
@@ -11,10 +11,17 @@ class Login extends Component {
 
   state = {
     username: '',
-    walletPassword: ''
+    walletPassword: '',
+    privateKey:
+      'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
   };
 
-  setUser;
+  retrieveAccount = privateKey => {
+    let user = this.props.web3.eth.accounts.privateKeyToAccount(
+      `0x${privateKey}`
+    );
+    this.props.retieveUser(user);
+  };
 
   findUserOnFirebase = async (username, password) =>
     await db
@@ -29,7 +36,6 @@ class Login extends Component {
     try {
       let backendPassword = encrypt(username, walletPassword).toString();
       let user = await this.findUserOnFirebase(username, backendPassword);
-      console.log('ss', user);
 
       this.props.setUser(user);
     } catch (err) {
@@ -60,6 +66,24 @@ class Login extends Component {
             placeholder="password"
             onChange={e => this.handleChange('walletPassword', e.target.value)}
           />
+          <input type="submit" />
+        </form>
+        <br />
+        <br />
+        <h2>Retrieve</h2>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            this.retrieveAccount(this.state.privateKey);
+          }}
+        >
+          <input
+            type="text"
+            placeholder="privateKey"
+            value={this.state.privateKey}
+            onChange={e => this.handleChange('privateKey', e.target.value)}
+          />
+
           <input type="submit" />
         </form>
       </div>
