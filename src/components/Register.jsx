@@ -1,8 +1,17 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { db } from '../constants/firebase';
-// import { web3 } from '../constants/web3';
 import encrypt from 'crypto-js/hmac-sha256';
+import { Input, Button } from 'antd';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  width: 50%;
+  margin: 0 auto;
+  flex-direction: column;
+`;
 
 class ComponentName extends PureComponent {
   static propTypes = {
@@ -65,15 +74,19 @@ class ComponentName extends PureComponent {
         }}
       >
         <h2>Register</h2>
-        <input
-          placeholder="username"
-          onChange={e => this.handleChange('username', e.target.value)}
-        />
-        <input
-          placeholder="password"
-          onChange={e => this.handleChange('walletPassword', e.target.value)}
-        />
-        <input type="submit" />
+        <Container>
+          <Input
+            placeholder="username"
+            onChange={e => this.handleChange('username', e.target.value)}
+          />
+          <Input
+            placeholder="password"
+            onChange={e => this.handleChange('walletPassword', e.target.value)}
+          />
+        </Container>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
       </form>
     );
   }

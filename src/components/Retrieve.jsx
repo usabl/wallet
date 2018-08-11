@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import encrypt from 'crypto-js/hmac-sha256';
 import { db } from '../constants/firebase';
+import encrypt from 'crypto-js/hmac-sha256';
 import styled from 'styled-components';
 import { Input, Button } from 'antd';
 
@@ -13,32 +13,36 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-class Login extends PureComponent {
+class RetrieveWithPrivateKey extends PureComponent {
   static propTypes = {
-    updateTitle: PropTypes.func.isRequired,
-    setUser: PropTypes.func.isRequired
+    retieveUser: PropTypes.func.isRequired,
+    web3: PropTypes.object
   };
 
   state = {
     username: '',
-    walletPassword: ''
+    walletPassword: '',
+    privateKey:
+      'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
   };
 
-  findUserOnFirebase = async (username, password) =>
-    await db
-      .collection('users')
-      .where('username', '==', username)
-      .where('password', '==', password)
-      .get()
-      .then(collection => collection.docs.map(doc => doc.data()))
-      .then(users => users[0]);
+  addUserToFirebase = (username, password, jsonWallet) => {
+    let user = { username, password, jsonWallet };
+    db.collection('users').add(user);
+  };
 
-  handleSubmit = async (username, walletPassword) => {
+  handleSubmit = async (username, walletPassword, privateKey) => {
+    let wallet = this.props.web3.eth.accounts.privateKeyToAccount(
+      `0x${privateKey}`
+    );
+
+    let jsonWallet = await wallet.encrypt(walletPassword, {});
+
+    // optimistic frontend update
+    this.props.updateTitle(jsonWallet);
     try {
       let backendPassword = encrypt(username, walletPassword).toString();
-      let user = await this.findUserOnFirebase(username, backendPassword);
-
-      this.props.setUser(user);
+      this.addUserToFirebase(username, backendPassword, jsonWallet);
     } catch (err) {
       // revert frontend update if something fails here
       console.log('err', err);
@@ -49,12 +53,16 @@ class Login extends PureComponent {
 
   render() {
     return (
-      <div className="Login">
-        <h2>Login</h2>
+      <div>
+        <h2>Retrieve</h2>
         <form
           onSubmit={e => {
             e.preventDefault();
-            this.handleSubmit(this.state.username, this.state.walletPassword);
+            this.handleSubmit(
+              this.state.username,
+              this.state.walletPassword,
+              this.state.privateKey
+            );
           }}
         >
           <Container>
@@ -70,6 +78,12 @@ class Login extends PureComponent {
                 this.handleChange('walletPassword', e.target.value)
               }
             />
+            <Input
+              type="text"
+              placeholder="privateKey"
+              value={this.state.privateKey}
+              onChange={e => this.handleChange('privateKey', e.target.value)}
+            />
           </Container>
           <Button type="primary" htmlType="submit">
             Submit
@@ -80,4 +94,4 @@ class Login extends PureComponent {
   }
 }
 
-export default Login;
+export default RetrieveWithPrivateKey;
