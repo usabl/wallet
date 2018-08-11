@@ -9,7 +9,7 @@ class App extends Component {
   state = {
     username: '',
     walletPassword: '',
-    title: 'Welcome to React'
+    title: 'Welcome to Usabl'
   };
 
   handleSubmit = async (username, walletPassword) => {
