@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-import './App.css';
 import ethers from 'ethers';
 import CryptoJS from 'crypto-js';
-import styled from 'styled-components';
-import { TextInputField } from 'evergreen-ui';
-import Login from './components/Login.js';
 
-class App extends Component {
+class Login extends Component {
   state = {
     username: '',
-    walletPassword: '',
-    title: 'Welcome to Usabl'
+    walletPassword: ''
   };
 
   handleSubmit = async (username, walletPassword) => {
@@ -21,12 +16,13 @@ class App extends Component {
         username,
         walletPassword
       ).toString();
-
-      localStorage.setItem(
-        'wallet_data',
-        JSON.stringify({ [username]: backendPassword })
-      );
-      console.log('jsonWallet', jsonWallet);
+      let data = JSON.parse(localStorage.getItem('wallet_data'));
+      if (data[username] === backendPassword) {
+        console.log('Yayy success');
+      } else {
+        console.log('jsonWallet', jsonWallet);
+        console.log('backPass', backendPassword);
+      }
     } catch (err) {
       console.log('err', err);
     }
@@ -36,35 +32,29 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">{this.state.title}</h1>
-        </header>
-
+      <div className="Login">
+        <p>Login</p>
         <form
           onSubmit={e => {
             e.preventDefault();
             this.handleSubmit(this.state.username, this.state.walletPassword);
           }}
         >
-          <TextInputField
-            inputWidth="250px"
-            label="Username"
+          <input
+            type="text"
             placeholder="username"
             onChange={e => this.handleChange('username', e.target.value)}
           />
-          <TextInputField
-            inputWidth="250px"
-            label="Password"
+          <input
+            type="text"
             placeholder="password"
             onChange={e => this.handleChange('walletPassword', e.target.value)}
           />
           <input type="submit" />
         </form>
-        <Login />
       </div>
     );
   }
 }
 
-export default App;
+export default Login;
