@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Login from './components/Login';
 import Register from './components/Register';
 import Navbar from './components/Nav';
+import TxHistory from './components/TxHistory';
 import styled from 'styled-components';
 import { web3 } from './constants/web3';
 
@@ -18,8 +19,6 @@ class App extends Component {
 
   updateTitle = async jsonWallet => {
     let balance = await web3.eth.getBalance(jsonWallet.address);
-    console.log(balance);
-
     this.setState(() => ({
       title: jsonWallet.address,
       auth: true,
@@ -27,11 +26,14 @@ class App extends Component {
     }));
   };
 
-  setUser = user =>
+  setUser = async user => {
+    let balance = await web3.eth.getBalance(user.jsonWallet.address);
     this.setState({
-      title: user.jsonWallet.address,
-      auth: true
+      title: `0x${user.jsonWallet.address}`,
+      auth: true,
+      balance
     });
+  };
 
   logout = () =>
     this.setState(() => ({ title: 'Welcome to Usabl', auth: false }));
@@ -41,13 +43,17 @@ class App extends Component {
     return (
       <Wrapper>
         <Navbar title={title} balance={balance} />
+
         {!auth ? (
           <Fragment>
             <Register updateTitle={this.updateTitle} />
             <Login updateTitle={this.updateTitle} setUser={this.setUser} />
           </Fragment>
         ) : (
-          <button onClick={this.logout}>Logout</button>
+          <div>
+            <button onClick={this.logout}>Logout</button>
+            <TxHistory title={title} />
+          </div>
         )}
       </Wrapper>
     );
