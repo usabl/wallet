@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import ethers from 'ethers';
 import CryptoJS from 'crypto-js';
+import Login from './Components/Login.js'
 
 class App extends Component {
   state = {
@@ -19,9 +20,7 @@ class App extends Component {
         walletPassword
       ).toString();
 
-      // sessionStorage['username'] = username;
-      // sessionStorage['jsonWallet'] = jsonWallet;
-
+      localStorage.setItem('wallet_data', JSON.stringify({ [username]: backendPassword }));
       console.log('jsonWallet', jsonWallet);
     } catch (err) {
       console.log('err', err);
@@ -58,6 +57,7 @@ class App extends Component {
           />
           <input type="submit" />
         </form>
+        <Login />
       </div>
     );
   }
