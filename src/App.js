@@ -3,6 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 import ethers from 'ethers';
 import CryptoJS from 'crypto-js';
+import Web3 from 'web3';
+
+const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
 
 class App extends Component {
   state = {
@@ -12,7 +15,8 @@ class App extends Component {
 
   handleSubmit = async (username, walletPassword) => {
     try {
-      let wallet = ethers.Wallet.createRandom();
+      let wallet = web3.eth.accounts.create();
+      // can add entropy .create([entropy])
       let jsonWallet = await wallet.encrypt(walletPassword, {});
       let backendPassword = CryptoJS.HmacSHA256(
         username,
@@ -23,6 +27,7 @@ class App extends Component {
       // sessionStorage['jsonWallet'] = jsonWallet;
 
       console.log('jsonWallet', jsonWallet);
+      console.log('wallet_public_key', wallet.mnemonic);
     } catch (err) {
       console.log('err', err);
     }
