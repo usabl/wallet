@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from '../logo.svg';
+import '../App.css';
 import ethers from 'ethers';
 import CryptoJS from 'crypto-js';
-import Login from './Components/Login.js'
 
-class App extends Component {
+class Login extends Component {
   state = {
     username: '',
     walletPassword: ''
@@ -19,9 +18,14 @@ class App extends Component {
         username,
         walletPassword
       ).toString();
+      let data = JSON.parse(localStorage.getItem('wallet_data'))
+      if (data[username] === backendPassword) {
+        console.log('Yayy success')
+      } else {
+        console.log('jsonWallet', jsonWallet);
+        console.log('backPass', backendPassword);
 
-      localStorage.setItem('wallet_data', JSON.stringify({ [username]: backendPassword }));
-      console.log('jsonWallet', jsonWallet);
+      }
     } catch (err) {
       console.log('err', err);
     }
@@ -31,14 +35,8 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div className="Login">
+        <p>Login</p>
         <form
           onSubmit={e => {
             e.preventDefault();
@@ -57,10 +55,9 @@ class App extends Component {
           />
           <input type="submit" />
         </form>
-        <Login />
       </div>
     );
   }
 }
 
-export default App;
+export default Login;
