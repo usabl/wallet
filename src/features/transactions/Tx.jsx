@@ -82,7 +82,7 @@ class Dialogue extends PureComponent {
     visible: false,
     count: null,
     showAdvanced: false,
-    gas: 2000000,
+    gas: 0,
     gasprices: ['', '', '', ''],
     passwordConfirm: '',
     actualPrice: 0
@@ -184,8 +184,6 @@ class Dialogue extends PureComponent {
 
     let gasprices = Object.values(gasprice).map(val => Number(val));
 
-    // .map(gas => this.props.web3.utils.fromWei(gas));
-
     // Mor comprehensive api but CORB issue. May fix in the futur https://ethgasstation.info/json/ethgasAPI.json
 
     let price = await fetch(
@@ -213,7 +211,7 @@ class Dialogue extends PureComponent {
           handleCancel={this.handleCancel}
           handleChange={this.handleChange}
           passwordConfirm={this.state.passwordConfirm}
-          gas={this.state.gas}
+          gas={this.state.value}
           showAdvanced={this.state.showAdvanced}
           onChange={this.onChange}
           closeModal={this.closeModal}
