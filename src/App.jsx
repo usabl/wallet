@@ -9,6 +9,7 @@ import getWeb3 from './constants/web3';
 import Tx from './features/transactions/Tx';
 import { Button } from 'antd';
 import { Tabs } from 'antd';
+
 const TabPane = Tabs.TabPane;
 
 const LoggedIn = ({ logout, web3, title }) => (
@@ -23,7 +24,7 @@ const LoggedIn = ({ logout, web3, title }) => (
         <Tx web3={web3} title={title} />
       </TabPane>
       <TabPane tab="History" key="3">
-        I'm a table
+        <TxHistory title={title} />
       </TabPane>
     </Tabs>
   </Fragment>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { web3 } from '../constants/web3';
+import getWeb3 from '../constants/web3';
 
 class TxHistory extends Component {
   state = {
@@ -45,7 +45,7 @@ class TxHistory extends Component {
     // }
   }
   updateTitle = async account => {
-    let balance = await web3.eth.getBalance(account);
+    let balance = await getWeb3.eth.getBalance(account);
     console.log(balance);
   };
 
