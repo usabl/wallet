@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import './nav.css';
 
 const Nav = styled.nav`
   color: #222;
@@ -36,8 +35,7 @@ class Navbar extends PureComponent {
   render() {
     let { title, balance } = this.props;
     return (
-      <Nav>
-        <h1>Your address is</h1>
+      <Nav data-testId="navbar">
         <Title>{title}</Title>
         <div>
           <Pill>{balance}</Pill>

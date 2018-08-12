@@ -58,14 +58,14 @@ class App extends PureComponent {
     title: 'Welcome to Usabl',
     auth: false,
     balance: '🎉',
-    web3: null
+    web3: null,
   };
 
   componentWillMount() {
     getWeb3
       .then(results => {
         this.setState({
-          web3: results.web3
+          web3: results.web3,
         });
       })
       .catch(() => {
@@ -78,7 +78,7 @@ class App extends PureComponent {
     this.setState(() => ({
       title: `0x${jsonWallet.address}`,
       auth: true,
-      balance
+      balance,
     }));
   };
 
@@ -87,7 +87,7 @@ class App extends PureComponent {
     this.setState(() => ({
       balance,
       title: `0x${user.jsonWallet.address}`,
-      auth: true
+      auth: true,
     }));
   };
 
@@ -95,23 +95,24 @@ class App extends PureComponent {
     this.setState(() => ({
       title: 'Welcome to Usabl',
       auth: false,
-      balance: ''
+      balance: '',
     }));
 
   render() {
     let { auth, title, balance } = this.state;
     return (
-      <Wrapper>
+      <Wrapper data-testId="mainApp">
         <Navbar title={title} balance={balance} />
-
         {!auth ? (
           <LoggedOut
+            data-testId="out"
             updateTitle={this.updateTitle}
             web3={this.state.web3}
             setUser={this.setUser}
           />
         ) : (
           <LoggedIn
+            data-testId="in"
             logout={this.logout}
             web3={this.state.web3}
             title={this.state.title}

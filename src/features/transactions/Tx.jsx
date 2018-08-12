@@ -6,12 +6,9 @@ import Counter from '../../build/contracts/Counter.json';
 import { Input, notification } from 'antd';
 import { Slider } from 'antd';
 import styled from 'styled-components';
-import {
-  setProviderAndfixTruffleContractCompatibilityIssue,
-  matchPasswords
-} from './helpers';
+import { setProviderAndfixTruffleContractCompatibilityIssue, matchPasswords } from './helpers';
 
-const TxModal = ({
+export const TxModal = ({
   visible,
   handleOk,
   handleCancel,
@@ -24,10 +21,11 @@ const TxModal = ({
   closeModal,
   min,
   max,
-  actualPrice
+  actualPrice,
 }) => {
   return (
     <Modal
+      getByTestId="txModal"
       title="Basic Modal"
       visible={visible}
       onOk={handleOk}
@@ -36,14 +34,9 @@ const TxModal = ({
         <Button key="back" onClick={handleCancel}>
           Advanced Settings
         </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          loading={loading}
-          onClick={handleOk}
-        >
+        <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
           Submit
-        </Button>
+        </Button>,
       ]}
     >
       <Input
@@ -75,7 +68,7 @@ class Dialogue extends PureComponent {
   static propTypes = {
     title: PropTypes.string,
     web3: PropTypes.object,
-    loading: false
+    loading: false,
   };
 
   state = {
@@ -85,31 +78,31 @@ class Dialogue extends PureComponent {
     gas: 0,
     gasprices: ['', '', '', ''],
     passwordConfirm: '',
-    actualPrice: 0
+    actualPrice: 0,
   };
 
   showModal = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
   closeModal = () =>
     this.setState({
-      visible: false
+      visible: false,
     });
 
   handleOk = () => {
     this.incrementCounter(this.state.passwordConfirm);
     this.setState({
       visible: false,
-      passwordConfirm: ''
+      passwordConfirm: '',
     });
   };
 
   handleCancel = () =>
     this.setState({
-      showAdvanced: true
+      showAdvanced: true,
     });
 
   handleChange = (field, value) => this.setState({ [field]: value });
@@ -117,7 +110,7 @@ class Dialogue extends PureComponent {
   onChange = value =>
     this.setState(prevState => ({
       gas: value,
-      actualPrice: value * 0.0001 * prevState.ethusd
+      actualPrice: value * 0.0001 * prevState.ethusd,
     }));
 
   incrementCounter = async passwordConfirm => {
@@ -129,14 +122,12 @@ class Dialogue extends PureComponent {
       .then(collection => collection.docs.map(doc => doc.data().username))
       .then(users => users[0]);
 
-    console.log('1', username, passwordConfirm);
-
     let worthy = await matchPasswords(username, passwordConfirm);
 
     if (worthy) {
       let counter = setProviderAndfixTruffleContractCompatibilityIssue(
         Counter,
-        this.props.web3.currentProvider
+        this.props.web3.currentProvider,
       );
 
       /*
@@ -154,7 +145,7 @@ class Dialogue extends PureComponent {
           counterInstance = instance;
           return counterInstance.increment.call({
             from: this.props.title,
-            gas: this.state.gas
+            gas: this.state.gas,
           });
         })
         .then(result => {
@@ -170,31 +161,23 @@ class Dialogue extends PureComponent {
       notification['error']({
         message: 'Thou shalt not pass.',
         description:
-          'You be bad. YOU STOP, I see you ok. Dont make password thief, you go now, no crypto!'
+          'You be bad. YOU STOP, I see you ok. Dont make password thief, you go now, no crypto!',
       });
       return;
     }
   };
 
   async componentDidMount() {
-    let gasprice = await fetch(
-      'https://www.etherchain.org/api/gasPriceOracle'
-    ).then(blob => blob.json());
-    // console.log('g', gasprice);
+    let gasprice = await fetch('https://www.etherchain.org/api/gasPriceOracle').then(blob =>
+      blob.json(),
+    );
 
     let gasprices = Object.values(gasprice).map(val => Number(val));
 
-    // Mor comprehensive api but CORB issue. May fix in the futur https://ethgasstation.info/json/ethgasAPI.json
-
-    let price = await fetch(
-      'https://api.coinmarketcap.com/v2/ticker/1027/?convert=USD'
-    ).then(blob => blob.json());
+    let price = await fetch('https://api.coinmarketcap.com/v2/ticker/1027/?convert=USD').then(
+      blob => blob.json(),
+    );
     let ethusd = price.data.quotes.USD.price;
-
-    // let conveth = await this.props.web3.utils.fromWei(
-    //   parseInt(this.state.gasprice.safeLow, 10),
-    //   'ether'
-    // );
 
     this.setState({ gasprices, ethusd });
   }
