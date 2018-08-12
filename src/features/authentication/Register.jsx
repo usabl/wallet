@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Input, Button } from 'antd';
 import styled from 'styled-components';
-import { Form } from 'antd';
-import { encryptBackendPassword, addUserToFirebase } from './helpers';
-const FormItem = Form.Item;
+import { addEncryptedUserToFirebase } from './helpers';
+import { Form, Button } from 'antd';
+import { FormItems } from './helpers';
 
 const Container = styled.div`
   display: flex;
@@ -45,8 +44,7 @@ class ComponentName extends PureComponent {
     // optimistic frontend update
     this.props.updateTitle(jsonWallet);
     try {
-      let backendPassword = encryptBackendPassword(username, walletPassword);
-      addUserToFirebase(username, backendPassword, jsonWallet);
+      addEncryptedUserToFirebase(username, walletPassword, jsonWallet);
     } catch (err) {
       // revert frontend update if something fails here
       console.log('err', err);
@@ -65,20 +63,8 @@ class ComponentName extends PureComponent {
       >
         <h2>Register</h2>
         <Container>
-          <FormItem>
-            <Input
-              placeholder="username"
-              onChange={e => this.handleChange('username', e.target.value)}
-            />
-          </FormItem>
-          <FormItem>
-            <Input
-              placeholder="password"
-              onChange={e =>
-                this.handleChange('walletPassword', e.target.value)
-              }
-            />
-          </FormItem>
+          <FormItems type="username" handleChange={this.handleChange} />
+          <FormItems type="password" handleChange={this.handleChange} />
         </Container>
         <Button type="primary" htmlType="submit">
           Submit

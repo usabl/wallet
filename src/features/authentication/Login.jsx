@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import encrypt from 'crypto-js/hmac-sha256';
 import { db } from '../../constants/firebase';
 import styled from 'styled-components';
-import { Input, Button } from 'antd';
-
+import { Button } from 'antd';
+import { FormItems } from './helpers';
 import { Form } from 'antd';
-const FormItem = Form.Item;
 
 const LoginForm = ({
   username,
@@ -21,20 +20,8 @@ const LoginForm = ({
     }}
   >
     <Container>
-      <FormItem>
-        <Input
-          type="text"
-          placeholder="username"
-          onChange={e => handleChange('username', e.target.value)}
-        />
-      </FormItem>
-      <FormItem>
-        <Input
-          type="password"
-          placeholder="password"
-          onChange={e => handleChange('walletPassword', e.target.value)}
-        />
-      </FormItem>
+      <FormItems type="username" handleChange={handleChange} />
+      <FormItems type="password" handleChange={handleChange} />
     </Container>
 
     <Button type="primary" htmlType="submit">

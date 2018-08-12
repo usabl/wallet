@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { db } from '../../constants/firebase';
-import { encryptBackendPassword, addUserToFirebase } from './helpers';
+import { addEncryptedUserToFirebase } from './helpers';
 import styled from 'styled-components';
-import { Input, Button } from 'antd';
-import { Form } from 'antd';
+import { Form, Input, Button } from 'antd';
+import { FormItems } from './helpers';
 const FormItem = Form.Item;
 
 const PrivateKeyForm = ({
@@ -21,20 +20,10 @@ const PrivateKeyForm = ({
     }}
   >
     <Container>
-      <FormItem>
-        <Input
-          type="text"
-          placeholder="username"
-          onChange={e => handleChange('username', e.target.value)}
-        />
-      </FormItem>
-      <FormItem>
-        <Input
-          type="password"
-          placeholder="password"
-          onChange={e => handleChange('walletPassword', e.target.value)}
-        />
-      </FormItem>
+      <FormItems type="username" handleChange={handleChange} />
+
+      <FormItems type="password" handleChange={handleChange} />
+
       <FormItem>
         <Input
           type="text"
@@ -71,11 +60,6 @@ class RetrieveWithPrivateKey extends PureComponent {
       '388c684f0ba1ef5017716adb5d21a053ea8e90277d0868337519f97bede61418'
   };
 
-  addUserToFirebase = (username, password, jsonWallet) => {
-    let user = { username, password, jsonWallet };
-    db.collection('users').add(user);
-  };
-
   handleSubmit = async (username, walletPassword, privateKey) => {
     let wallet = this.props.web3.eth.accounts.privateKeyToAccount(
       `0x${privateKey}`
@@ -86,9 +70,7 @@ class RetrieveWithPrivateKey extends PureComponent {
     // optimistic frontend update
     this.props.updateTitle(jsonWallet);
     try {
-      let backendPassword = encryptBackendPassword(username, walletPassword);
-
-      addUserToFirebase(username, backendPassword, jsonWallet);
+      addEncryptedUserToFirebase(username, walletPassword, jsonWallet);
     } catch (err) {
       // revert frontend update if something fails here
       console.log('err', err);
