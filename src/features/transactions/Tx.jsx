@@ -123,6 +123,8 @@ class Dialogue extends PureComponent {
       .then(collection => collection.docs.map(doc => doc.data().username))
       .then(users => users[0]);
 
+    console.log('1', username, passwordConfirm);
+
     let worthy = await matchPasswords(username, passwordConfirm);
 
     if (worthy) {

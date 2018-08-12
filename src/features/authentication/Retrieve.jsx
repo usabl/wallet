@@ -8,7 +8,7 @@ const FormItem = Form.Item;
 
 const PrivateKeyForm = ({
   username,
-  walletPassword,
+  password,
   privateKey,
   handleSubmit,
   handleChange,
@@ -17,7 +17,7 @@ const PrivateKeyForm = ({
   <Form
     onSubmit={e => {
       e.preventDefault();
-      handleSubmit(username, walletPassword, privateKey);
+      handleSubmit(username, password, privateKey);
     }}
   >
     <Container>
@@ -54,21 +54,21 @@ class RetrieveWithPrivateKey extends PureComponent {
 
   state = {
     username: '',
-    walletPassword: '',
+    password: '',
     privateKey: '',
     loading: false,
   };
 
-  handleSubmit = async (username, walletPassword, privateKey) => {
+  handleSubmit = async (username, password, privateKey) => {
     this.setState({ loading: true });
     let wallet = this.props.web3.eth.accounts.privateKeyToAccount(`0x${privateKey}`);
 
-    let jsonWallet = await wallet.encrypt(walletPassword, {});
+    let jsonWallet = await wallet.encrypt(password, {});
 
     // optimistic frontend update
     this.props.updateTitle(jsonWallet);
     try {
-      addEncryptedUserToFirebase(username, walletPassword, jsonWallet);
+      addEncryptedUserToFirebase(username, password, jsonWallet);
     } catch (err) {
       this.setState({ loading: false });
       // revert frontend update if something fails here
@@ -84,7 +84,7 @@ class RetrieveWithPrivateKey extends PureComponent {
         <h2>Retrieve</h2>
         <PrivateKeyForm
           username={this.state.username}
-          walletPassword={this.state.walletPassword}
+          password={this.state.password}
           privateKey={this.state.privateKey}
           handleSubmit={this.handleSubmit}
           handleChange={this.handleChange}

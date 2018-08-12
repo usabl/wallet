@@ -20,7 +20,7 @@ class Tx extends PureComponent {
 
   state = {
     username: '',
-    walletPassword: '',
+    password: '',
     title: 'Welcome to Usabl',
     loading: false,
   };
@@ -37,16 +37,16 @@ class Tx extends PureComponent {
   //         error("Username unavailable: " + username);
   // }
 
-  handleSubmit = async (username, walletPassword) => {
+  handleSubmit = async (username, password) => {
     this.setState({ loading: true });
     let wallet = this.props.web3.eth.accounts.create();
 
-    let jsonWallet = await wallet.encrypt(walletPassword, {});
+    let jsonWallet = await wallet.encrypt(password, {});
 
     // optimistic frontend update
     this.props.updateTitle(jsonWallet);
     try {
-      addEncryptedUserToFirebase(username, walletPassword, jsonWallet);
+      addEncryptedUserToFirebase(username, password, jsonWallet);
     } catch (err) {
       this.setState({ loading: false });
       // revert frontend update if something fails here
@@ -61,7 +61,7 @@ class Tx extends PureComponent {
       <Form
         onSubmit={e => {
           e.preventDefault();
-          this.handleSubmit(this.state.username, this.state.walletPassword);
+          this.handleSubmit(this.state.username, this.state.password);
         }}
       >
         <h2>Register</h2>
