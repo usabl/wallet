@@ -23,7 +23,8 @@ const TxModal = ({
   loading,
   closeModal,
   min,
-  max
+  max,
+  actualPrice
 }) => {
   return (
     <Modal
@@ -51,10 +52,7 @@ const TxModal = ({
         value={passwordConfirm}
       />
 
-      <p>
-        Do you want this transaction to be Fast or Cheap. Please move the slider
-        to decide
-      </p>
+      <p>{`This will cost roughly $${actualPrice}`}</p>
       {showAdvanced && (
         <Fragment>
           <Slider min={min} max={max} defaultValue={gas} onChange={onChange} />
@@ -85,9 +83,9 @@ class Dialogue extends PureComponent {
     count: null,
     showAdvanced: false,
     gas: 2000000,
-    gasprice: { safeLow: '', standard: '', fast: '', fastest: '' },
-
-    passwordConfirm: ''
+    gasprices: ['', '', '', ''],
+    passwordConfirm: '',
+    actualPrice: 0
   };
 
   showModal = () => {
@@ -116,7 +114,11 @@ class Dialogue extends PureComponent {
 
   handleChange = (field, value) => this.setState({ [field]: value });
 
-  onChange = value => this.setState({ gas: value });
+  onChange = value =>
+    this.setState(prevState => ({
+      gas: value,
+      actualPrice: value * 0.0001 * prevState.ethusd
+    }));
 
   incrementCounter = async passwordConfirm => {
     this.setState({ loading: true });
@@ -175,16 +177,28 @@ class Dialogue extends PureComponent {
   };
 
   async componentDidMount() {
-    let fetchdata = await fetch(
+    let gasprice = await fetch(
       'https://www.etherchain.org/api/gasPriceOracle'
-    );
+    ).then(blob => blob.json());
+    // console.log('g', gasprice);
+
+    let gasprices = Object.values(gasprice).map(val => Number(val));
+
+    // .map(gas => this.props.web3.utils.fromWei(gas));
+
     // Mor comprehensive api but CORB issue. May fix in the futur https://ethgasstation.info/json/ethgasAPI.json
 
-    let gasprice = await fetchdata.json();
-    console.log('1', gasprice);
-    this.setState({
-      gasprice
-    });
+    let price = await fetch(
+      'https://api.coinmarketcap.com/v2/ticker/1027/?convert=USD'
+    ).then(blob => blob.json());
+    let ethusd = price.data.quotes.USD.price;
+
+    // let conveth = await this.props.web3.utils.fromWei(
+    //   parseInt(this.state.gasprice.safeLow, 10),
+    //   'ether'
+    // );
+
+    this.setState({ gasprices, ethusd });
   }
 
   render() {
@@ -204,8 +218,9 @@ class Dialogue extends PureComponent {
           onChange={this.onChange}
           closeModal={this.closeModal}
           loading={this.state.loading}
-          min={parseInt(this.state.gasprice.safeLow, 10)}
-          max={parseInt(this.state.gasprice.fast, 10)}
+          min={this.state.gasprices[0]}
+          max={this.state.gasprices[3]}
+          actualPrice={this.state.actualPrice}
         />
         <span>{this.state.count}</span>
       </Fragment>

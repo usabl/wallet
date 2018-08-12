@@ -7,7 +7,13 @@ import { Button } from 'antd';
 import { FormItems } from './helpers';
 import { Form } from 'antd';
 
-const LoginForm = ({ username, password, handleSubmit, handleChange, loading }) => (
+const LoginForm = ({
+  username,
+  password,
+  handleSubmit,
+  handleChange,
+  loading
+}) => (
   <Form
     onSubmit={e => {
       e.preventDefault();
@@ -36,13 +42,13 @@ const Container = styled.div`
 class Login extends PureComponent {
   static propTypes = {
     updateTitle: PropTypes.func.isRequired,
-    setUser: PropTypes.func.isRequired,
+    setUser: PropTypes.func.isRequired
   };
 
   state = {
     username: '',
     password: '',
-    loading: false,
+    loading: false
   };
 
   findUserOnFirebase = async (username, password) =>
@@ -57,7 +63,6 @@ class Login extends PureComponent {
   handleSubmit = async (username, password) => {
     this.setState({ loading: true });
     try {
-      console.log('2', username, password);
       let backendPassword = encrypt(username, password).toString();
       let user = await this.findUserOnFirebase(username, backendPassword);
 
