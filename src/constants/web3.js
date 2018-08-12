@@ -29,7 +29,7 @@ const getWeb3 = new Promise((resolve, reject) => {
     // web3 = new Web3('https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg');
 
     results = {
-      web3,
+      web3
     };
 
     // console.log('No web3 instance injected, using Local web3.');

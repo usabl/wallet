@@ -3,11 +3,13 @@ import Login from './features/authentication/Login';
 import Register from './features/authentication/Register';
 import RetrieveWithPrivateKey from './features/authentication/Retrieve';
 import Navbar from './components/Nav';
+import TxHistory from './components/TxHistory';
 import styled from 'styled-components';
 import getWeb3 from './constants/web3';
 import Tx from './features/transactions/Tx';
 import { Button } from 'antd';
 import { Tabs } from 'antd';
+
 const TabPane = Tabs.TabPane;
 
 const LoggedIn = ({ logout, web3, title }) => (
@@ -22,7 +24,7 @@ const LoggedIn = ({ logout, web3, title }) => (
         <Tx web3={web3} title={title} />
       </TabPane>
       <TabPane tab="History" key="3">
-        I'm a table
+        <TxHistory title={title} />
       </TabPane>
     </Tabs>
   </Fragment>
@@ -100,6 +102,7 @@ class App extends PureComponent {
     return (
       <Wrapper>
         <Navbar title={title} balance={balance} />
+
         {!auth ? (
           <LoggedOut updateTitle={this.updateTitle} web3={this.state.web3} setUser={this.setUser} />
         ) : (
