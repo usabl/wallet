@@ -6,4 +6,8 @@
 
 ## gotchas
 
-- you have to manually drag the contract build folder into src since we havn't ejected from creat-react-app yet. It cant refernce things outside of src.
+So to setup the environment
+Update truffle
+Setup a network using Truffle develop
+Compile and migrate on truffle console
+Manually drag the build folder into src as we havent ejected from create-react-app.(Can't reference things out of src)

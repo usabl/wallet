@@ -26,24 +26,12 @@
     "presets": ["latest"]
   },
   "devDependencies": {
-    "jest": "^23.5.0"
-  },
-  "description": "Making ethereum usable with a client side ethereum wallet",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/usabl/wallet.git"
-  },
-  "keywords": [
-    "ethereum",
-    "clientside",
-    "wallet",
-    "usable"
-  ],
-  "author": "Josh Pitzalis, Akshay Iyer, Sumukh Shetty",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/usabl/wallet/issues"
-  },
-  "homepage": "https://github.com/usabl/wallet#readme"
+    "eslint-plugin-react": "^7.10.0",
+    "jest": "^23.5.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-loader": "^1.8.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.0.1"
+  }
 }

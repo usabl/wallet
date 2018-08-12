@@ -19,18 +19,31 @@ const TxModal = ({
   passwordConfirm,
   gas,
   showAdvanced,
-  onChange
+  onChange,
+  loading,
+  closeModal
 }) => {
   return (
     <Modal
       title="Basic Modal"
       visible={visible}
       onOk={handleOk}
-      onCancel={handleCancel}
-      cancelText="Advanced Settings"
+      onCancel={closeModal}
+      footer={[
+        <Button key="back" onClick={handleCancel}>
+          Advanced Settings
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={handleOk}
+        >
+          Submit
+        </Button>
+      ]}
     >
       <Input
-        danger
         placeholder="Enter your password to proceed..."
         onChange={e => handleChange('passwordConfirm', e.target.value)}
         value={passwordConfirm}
@@ -43,7 +56,6 @@ const TxModal = ({
       {showAdvanced && (
         <Fragment>
           <Slider defaultValue={gas} onChange={onChange} />
-
           <Descriptors>
             <p>Cheap</p> <p>Fast</p>
           </Descriptors>
@@ -62,7 +74,8 @@ const Descriptors = styled.div`
 class Dialogue extends PureComponent {
   static propTypes = {
     title: PropTypes.string,
-    web3: PropTypes.object
+    web3: PropTypes.object,
+    loading: false
   };
 
   state = {
@@ -78,6 +91,11 @@ class Dialogue extends PureComponent {
       visible: true
     });
   };
+
+  closeModal = () =>
+    this.setState({
+      visible: false
+    });
 
   handleOk = () => {
     this.incrementCounter(this.state.passwordConfirm);
@@ -97,14 +115,13 @@ class Dialogue extends PureComponent {
   onChange = value => this.setState({ gas: value });
 
   incrementCounter = async passwordConfirm => {
+    this.setState({ loading: true });
     let username = await db
       .collection('users')
       .where(`jsonWallet.address`, `==`, this.props.title.substring(2))
       .get()
       .then(collection => collection.docs.map(doc => doc.data().username))
       .then(users => users[0]);
-
-    console.log('b', username, passwordConfirm);
 
     let worthy = await matchPasswords(username, passwordConfirm);
 
@@ -129,7 +146,7 @@ class Dialogue extends PureComponent {
           counterInstance = instance;
           return counterInstance.increment.call({
             from: this.props.title,
-            gas: this.state.gas
+            gas: 1000000
           });
         })
         .then(result => {
@@ -138,9 +155,10 @@ class Dialogue extends PureComponent {
         })
         .then(result => {
           // Update state with the result.
-          return this.setState({ count: result.c[0] });
+          return this.setState({ count: result.c[0], loading: false });
         });
     } else {
+      this.setState({ loading: false });
       notification['error']({
         message: 'Thou shalt not pass.',
         description:
@@ -165,6 +183,8 @@ class Dialogue extends PureComponent {
           gas={this.state.gas}
           showAdvanced={this.state.showAdvanced}
           onChange={this.onChange}
+          closeModal={this.closeModal}
+          loading={this.state.loading}
         />
         <span>{this.state.count}</span>
       </Fragment>
