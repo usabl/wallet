@@ -1,12 +1,33 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import './nav.css';
 
-const Wrapper = styled.div`
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+const Nav = styled.nav`
+  color: #222;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+`;
+const Title = styled.h2`
+  color: gray;
+  margin: auto 0;
+`;
+
+const Pill = styled.div`
+  color: gray;
+  display: inline-block;
+  transition: background-color 0.15s ease-in-out;
+  opacity: 1;
+  transition: opacity 0.15s ease-in;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 9999px;
+  border-color: gray;
+  border-style: solid;
+  border-width: 1px;
 `;
 
 class Navbar extends PureComponent {
@@ -15,10 +36,12 @@ class Navbar extends PureComponent {
   render() {
     let { title, balance } = this.props;
     return (
-      <Wrapper>
-        <h1>{title}</h1>
-        <h1>{balance}</h1>
-      </Wrapper>
+      <Nav>
+        <Title>{title}</Title>
+        <div>
+          <Pill>{balance}</Pill>
+        </div>
+      </Nav>
     );
   }
 }
