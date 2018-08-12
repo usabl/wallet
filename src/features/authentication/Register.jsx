@@ -13,15 +13,16 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-class ComponentName extends PureComponent {
+class Tx extends PureComponent {
   static propTypes = {
-    updateTitle: PropTypes.func.isRequired
+    updateTitle: PropTypes.func.isRequired,
   };
 
   state = {
     username: '',
     walletPassword: '',
-    title: 'Welcome to Usabl'
+    title: 'Welcome to Usabl',
+    loading: false,
   };
 
   // addUser: function(username, password, jsonWallet, success, error) {
@@ -37,6 +38,7 @@ class ComponentName extends PureComponent {
   // }
 
   handleSubmit = async (username, walletPassword) => {
+    this.setState({ loading: true });
     let wallet = this.props.web3.eth.accounts.create();
 
     let jsonWallet = await wallet.encrypt(walletPassword, {});
@@ -46,6 +48,7 @@ class ComponentName extends PureComponent {
     try {
       addEncryptedUserToFirebase(username, walletPassword, jsonWallet);
     } catch (err) {
+      this.setState({ loading: false });
       // revert frontend update if something fails here
       console.log('err', err);
     }
@@ -66,7 +69,7 @@ class ComponentName extends PureComponent {
           <FormItems type="username" handleChange={this.handleChange} />
           <FormItems type="password" handleChange={this.handleChange} />
         </Container>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={this.state.loading}>
           Submit
         </Button>
       </Form>
@@ -74,4 +77,4 @@ class ComponentName extends PureComponent {
   }
 }
 
-export default ComponentName;
+export default Tx;
