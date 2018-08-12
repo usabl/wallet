@@ -21,7 +21,10 @@ const TxModal = ({
   showAdvanced,
   onChange,
   loading,
-  closeModal
+  closeModal,
+  min,
+  max,
+  actualPrice
 }) => {
   return (
     <Modal
@@ -49,13 +52,10 @@ const TxModal = ({
         value={passwordConfirm}
       />
 
-      <p>
-        This transaction will cost you $ 0.
-        {gas}
-      </p>
+      <p>{`This will cost roughly $${actualPrice}`}</p>
       {showAdvanced && (
         <Fragment>
-          <Slider defaultValue={gas} onChange={onChange} />
+          <Slider min={min} max={max} defaultValue={gas} onChange={onChange} />
           <Descriptors>
             <p>Cheap</p> <p>Fast</p>
           </Descriptors>
@@ -82,8 +82,10 @@ class Dialogue extends PureComponent {
     visible: false,
     count: null,
     showAdvanced: false,
-    gas: 30,
-    passwordConfirm: ''
+    gas: 0,
+    gasprices: ['', '', '', ''],
+    passwordConfirm: '',
+    actualPrice: 0
   };
 
   showModal = () => {
@@ -112,7 +114,11 @@ class Dialogue extends PureComponent {
 
   handleChange = (field, value) => this.setState({ [field]: value });
 
-  onChange = value => this.setState({ gas: value });
+  onChange = value =>
+    this.setState(prevState => ({
+      gas: value,
+      actualPrice: value * 0.0001 * prevState.ethusd
+    }));
 
   incrementCounter = async passwordConfirm => {
     this.setState({ loading: true });
@@ -148,7 +154,7 @@ class Dialogue extends PureComponent {
           counterInstance = instance;
           return counterInstance.increment.call({
             from: this.props.title,
-            gas: 1000000
+            gas: this.state.gas
           });
         })
         .then(result => {
@@ -170,6 +176,29 @@ class Dialogue extends PureComponent {
     }
   };
 
+  async componentDidMount() {
+    let gasprice = await fetch(
+      'https://www.etherchain.org/api/gasPriceOracle'
+    ).then(blob => blob.json());
+    // console.log('g', gasprice);
+
+    let gasprices = Object.values(gasprice).map(val => Number(val));
+
+    // Mor comprehensive api but CORB issue. May fix in the futur https://ethgasstation.info/json/ethgasAPI.json
+
+    let price = await fetch(
+      'https://api.coinmarketcap.com/v2/ticker/1027/?convert=USD'
+    ).then(blob => blob.json());
+    let ethusd = price.data.quotes.USD.price;
+
+    // let conveth = await this.props.web3.utils.fromWei(
+    //   parseInt(this.state.gasprice.safeLow, 10),
+    //   'ether'
+    // );
+
+    this.setState({ gasprices, ethusd });
+  }
+
   render() {
     return (
       <Fragment>
@@ -182,11 +211,14 @@ class Dialogue extends PureComponent {
           handleCancel={this.handleCancel}
           handleChange={this.handleChange}
           passwordConfirm={this.state.passwordConfirm}
-          gas={this.state.gas}
+          gas={this.state.value}
           showAdvanced={this.state.showAdvanced}
           onChange={this.onChange}
           closeModal={this.closeModal}
           loading={this.state.loading}
+          min={this.state.gasprices[0]}
+          max={this.state.gasprices[3]}
+          actualPrice={this.state.actualPrice}
         />
         <span>{this.state.count}</span>
       </Fragment>

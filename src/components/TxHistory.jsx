@@ -7,9 +7,6 @@ class TxHistory extends Component {
     result: []
   };
   async componentDidMount() {
-    // console.log(this.props.title);
-    // this.updateTitle(this.props.title);
-
     var myAddr = this.props.title;
 
     let fetchdata = await fetch(
@@ -17,32 +14,8 @@ class TxHistory extends Component {
     );
 
     let txlist = await fetchdata.json();
-    // console.log('kk', txlist);
-    this.setState({ result: txlist.result });
 
-    // console.log(txlist.result[0].hash);
-    // for (var i = currentBlock; i >= 0 && (n > 0 || bal > 0); --i) {
-    //   console.log();
-    //   try {
-    //     var block = await web3.eth.getBlock(i, true);
-    //     console.log('block', block);
-    //     if (block && block.transactions) {
-    //       await block.transactions.forEach(function(e) {
-    //         if (myAddr === e.from) {
-    //           if (e.from !== e.to) bal = bal.plus(e.value);
-    //           console.log(i, e.from, e.to, e.value.toString(10));
-    //           --n;
-    //         }
-    //         if (myAddr === e.to) {
-    //           if (e.from !== e.to) bal = bal.minus(e.value);
-    //           console.log(i, e.from, e.to, e.value.toString(10));
-    //         }
-    //       });
-    //     }
-    //   } catch (e) {
-    //     console.error('Error in block ' + i, e);
-    //   }
-    // }
+    this.setState({ result: txlist.result });
   }
   updateTitle = async account => {
     let balance = await getWeb3.eth.getBalance(account);
@@ -53,7 +26,6 @@ class TxHistory extends Component {
 
   render() {
     let { result } = this.state;
-    console.log('pig', result);
     return (
       <div>
         <h1>Account History </h1>

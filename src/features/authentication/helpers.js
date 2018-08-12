@@ -21,7 +21,11 @@ export const addEncryptedUserToFirebase = (username, _password, jsonWallet) => {
 
 export const FormItems = ({ type, handleChange }) => (
   <FormItem>
-    <Input placeholder={type} onChange={e => handleChange(type, e.target.value)} required />
+    <Input
+      placeholder={type}
+      onChange={e => handleChange(type, e.target.value)}
+      required
+    />
   </FormItem>
 );
 

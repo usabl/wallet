@@ -37,6 +37,7 @@ class Navbar extends PureComponent {
     let { title, balance } = this.props;
     return (
       <Nav>
+        <h1>Your address is</h1>
         <Title>{title}</Title>
         <div>
           <Pill>{balance}</Pill>
