@@ -21,7 +21,9 @@ const TxModal = ({
   showAdvanced,
   onChange,
   loading,
-  closeModal
+  closeModal,
+  min,
+  max
 }) => {
   return (
     <Modal
@@ -50,12 +52,12 @@ const TxModal = ({
       />
 
       <p>
-        This transaction will cost you $ 0.
-        {gas}
+        Do you want this transaction to be Fast or Cheap. Please move the slider
+        to decide
       </p>
       {showAdvanced && (
         <Fragment>
-          <Slider defaultValue={gas} onChange={onChange} />
+          <Slider min={min} max={max} defaultValue={gas} onChange={onChange} />
           <Descriptors>
             <p>Cheap</p> <p>Fast</p>
           </Descriptors>
@@ -82,7 +84,9 @@ class Dialogue extends PureComponent {
     visible: false,
     count: null,
     showAdvanced: false,
-    gas: 30,
+    gas: 2000000,
+    gasprice: { safeLow: '', standard: '', fast: '', fastest: '' },
+
     passwordConfirm: ''
   };
 
@@ -148,7 +152,7 @@ class Dialogue extends PureComponent {
           counterInstance = instance;
           return counterInstance.increment.call({
             from: this.props.title,
-            gas: 1000000
+            gas: this.state.gas
           });
         })
         .then(result => {
@@ -170,6 +174,19 @@ class Dialogue extends PureComponent {
     }
   };
 
+  async componentDidMount() {
+    let fetchdata = await fetch(
+      'https://www.etherchain.org/api/gasPriceOracle'
+    );
+    // Mor comprehensive api but CORB issue. May fix in the futur https://ethgasstation.info/json/ethgasAPI.json
+
+    let gasprice = await fetchdata.json();
+    console.log('1', gasprice);
+    this.setState({
+      gasprice
+    });
+  }
+
   render() {
     return (
       <Fragment>
@@ -187,6 +204,8 @@ class Dialogue extends PureComponent {
           onChange={this.onChange}
           closeModal={this.closeModal}
           loading={this.state.loading}
+          min={parseInt(this.state.gasprice.safeLow, 10)}
+          max={parseInt(this.state.gasprice.fast, 10)}
         />
         <span>{this.state.count}</span>
       </Fragment>
