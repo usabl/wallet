@@ -9,18 +9,19 @@ import getWeb3 from './constants/web3';
 import Tx from './features/transactions/Tx';
 import { Button } from 'antd';
 import { Tabs } from 'antd';
+import SecondFactor from './features/authentication/SecondFactorAuth';
 
 const TabPane = Tabs.TabPane;
 
-const LoggedIn = ({ logout, web3, title }) => (
+const LoggedIn = ({ logout, web3, title, username }) => (
   <Fragment>
     <Tabs defaultActiveKey="2">
       <TabPane tab="Logout" key="1">
         <div>
-          {' '}
           <Button type="danger" size="small" onClick={logout}>
             Logout
           </Button>
+          <SecondFactor username={username} />
         </div>
       </TabPane>
       <TabPane tab="Click" key="2">
@@ -58,7 +59,8 @@ class App extends PureComponent {
     title: 'Welcome to Usabl',
     auth: false,
     balance: '🎉',
-    web3: null
+    web3: null,
+    username: ''
   };
 
   componentWillMount() {
@@ -87,7 +89,8 @@ class App extends PureComponent {
     this.setState(() => ({
       balance,
       title: `0x${user.jsonWallet.address}`,
-      auth: true
+      auth: true,
+      username: user.username
     }));
   };
 
@@ -115,6 +118,7 @@ class App extends PureComponent {
             logout={this.logout}
             web3={this.state.web3}
             title={this.state.title}
+            username={this.state.username}
           />
         )}
       </Wrapper>

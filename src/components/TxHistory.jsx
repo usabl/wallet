@@ -26,6 +26,7 @@ class TxHistory extends Component {
 
   render() {
     let { result } = this.state;
+
     return (
       <div>
         <h1>Account History </h1>

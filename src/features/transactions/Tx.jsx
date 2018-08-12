@@ -180,7 +180,6 @@ class Dialogue extends PureComponent {
     let gasprice = await fetch(
       'https://www.etherchain.org/api/gasPriceOracle'
     ).then(blob => blob.json());
-    // console.log('g', gasprice);
 
     let gasprices = Object.values(gasprice).map(val => Number(val));
 

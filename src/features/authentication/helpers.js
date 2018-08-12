@@ -45,3 +45,22 @@ export const findUsernameOnFirebase = async username =>
     .get()
     .then(collection => collection.docs.map(doc => doc.data()))
     .then(users => users.length === 0);
+
+export const getUserId = async username =>
+  await db
+    .collection('users')
+    .where('username', '==', username)
+    .get()
+    .then(collection => collection.docs.map(doc => doc.id))
+    .then(users => users[0]);
+
+export const addSecretToUserDb = async (username, secret) => {
+  let userId = await getUserId(username);
+  db.doc(`users/${userId}`).update({ secret });
+};
+
+export const getSecret = userId =>
+  db
+    .doc(`users/${userId}`)
+    .get()
+    .then(doc => doc.data().secret);
