@@ -7,17 +7,11 @@ import { Button } from 'antd';
 import { FormItems } from './helpers';
 import { Form } from 'antd';
 
-const LoginForm = ({
-  username,
-  walletPassword,
-  handleSubmit,
-  handleChange,
-  loading
-}) => (
+const LoginForm = ({ username, password, handleSubmit, handleChange, loading }) => (
   <Form
     onSubmit={e => {
       e.preventDefault();
-      handleSubmit(username, walletPassword);
+      handleSubmit(username, password);
     }}
   >
     <Container>
@@ -42,13 +36,13 @@ const Container = styled.div`
 class Login extends PureComponent {
   static propTypes = {
     updateTitle: PropTypes.func.isRequired,
-    setUser: PropTypes.func.isRequired
+    setUser: PropTypes.func.isRequired,
   };
 
   state = {
     username: '',
-    walletPassword: '',
-    loading: false
+    password: '',
+    loading: false,
   };
 
   findUserOnFirebase = async (username, password) =>
@@ -60,10 +54,11 @@ class Login extends PureComponent {
       .then(collection => collection.docs.map(doc => doc.data()))
       .then(users => users[0]);
 
-  handleSubmit = async (username, walletPassword) => {
+  handleSubmit = async (username, password) => {
     this.setState({ loading: true });
     try {
-      let backendPassword = encrypt(username, walletPassword).toString();
+      console.log('2', username, password);
+      let backendPassword = encrypt(username, password).toString();
       let user = await this.findUserOnFirebase(username, backendPassword);
 
       this.props.setUser(user);
@@ -84,7 +79,7 @@ class Login extends PureComponent {
           handleSubmit={this.handleSubmit}
           handleChange={this.handleChange}
           username={this.state.username}
-          walletPassword={this.state.walletPassword}
+          password={this.state.password}
           loading={this.state.loading}
         />
       </Fragment>
