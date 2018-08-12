@@ -1,10 +1,9 @@
 import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import encrypt from 'crypto-js/hmac-sha256';
-import { db } from '../../constants/firebase';
 import styled from 'styled-components';
-import { Button } from 'antd';
-import { FormItems } from './helpers';
+import { Button, notification } from 'antd';
+import { FormItems, findUserOnFirebase } from './helpers';
 import { Form } from 'antd';
 
 const LoginForm = ({ username, password, handleSubmit, handleChange, loading }) => (
@@ -45,23 +44,19 @@ class Login extends PureComponent {
     loading: false,
   };
 
-  findUserOnFirebase = async (username, password) =>
-    await db
-      .collection('users')
-      .where('username', '==', username)
-      .where('password', '==', password)
-      .get()
-      .then(collection => collection.docs.map(doc => doc.data()))
-      .then(users => users[0]);
-
   handleSubmit = async (username, password) => {
     this.setState({ loading: true });
     try {
-      console.log('2', username, password);
       let backendPassword = encrypt(username, password).toString();
-      let user = await this.findUserOnFirebase(username, backendPassword);
-
-      this.props.setUser(user);
+      let user = await findUserOnFirebase(username, backendPassword);
+      if (user) {
+        this.props.setUser(user);
+      } else {
+        notification['error']({
+          message: 'Aaarrgh, No Pirates by that name here, matey!',
+          description: `You'll be wanting to climbin aboard I suppose? Head to the Register page for adventure and treasures. `,
+        });
+      }
     } catch (err) {
       // revert frontend update if something fails here
       this.setState({ loading: false });

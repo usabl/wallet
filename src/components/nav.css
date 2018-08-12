@@ -1,0 +1,169 @@
+.ba {
+  border-style: solid;
+  border-width: 1px;
+}
+
+.bb {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+.b--white-20 {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.b--white-10 {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.br-pill {
+  border-radius: 9999px;
+}
+
+.dib {
+  display: inline-block;
+}
+
+.flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.items-center {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.justify-between {
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.h1 {
+  height: 1rem;
+}
+
+.link {
+  text-decoration: none;
+  -webkit-transition: color 0.15s ease-in;
+  transition: color 0.15s ease-in;
+}
+
+.link:link,
+.link:visited {
+  -webkit-transition: color 0.15s ease-in;
+  transition: color 0.15s ease-in;
+}
+
+.link:hover {
+  -webkit-transition: color 0.15s ease-in;
+  transition: color 0.15s ease-in;
+}
+
+.link:active {
+  -webkit-transition: color 0.15s ease-in;
+  transition: color 0.15s ease-in;
+}
+
+.link:focus {
+  -webkit-transition: color 0.15s ease-in;
+  transition: color 0.15s ease-in;
+  outline: 1px dotted currentColor;
+}
+
+.w1 {
+  width: 1rem;
+}
+
+.white-70 {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.white {
+  color: #fff;
+}
+
+.hover-black:hover {
+  color: #000;
+}
+
+.hover-black:focus {
+  color: #000;
+}
+
+.hover-white:hover {
+  color: #fff;
+}
+
+.hover-white:focus {
+  color: #fff;
+}
+
+.hover-bg-white:hover {
+  background-color: #fff;
+}
+
+.hover-bg-white:focus {
+  background-color: #fff;
+}
+
+.pa3 {
+  padding: 1rem;
+}
+
+.pv2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.ph4 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.mr3 {
+  margin-right: 1rem;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+.f6 {
+  font-size: 0.875rem;
+}
+
+.dim {
+  opacity: 1;
+  -webkit-transition: opacity 0.15s ease-in;
+  transition: opacity 0.15s ease-in;
+}
+
+.dim:hover,
+.dim:focus {
+  opacity: 0.5;
+  -webkit-transition: opacity 0.15s ease-in;
+  transition: opacity 0.15s ease-in;
+}
+
+.dim:active {
+  opacity: 0.8;
+  -webkit-transition: opacity 0.15s ease-out;
+  transition: opacity 0.15s ease-out;
+}
+
+.bg-animate,
+.bg-animate:hover,
+.bg-animate:focus {
+  -webkit-transition: background-color 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out;
+}
+
+@media screen and (min-width: 30em) {
+  .mr4-ns {
+    margin-right: 2rem;
+  }
+}

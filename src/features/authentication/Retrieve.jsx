@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { addEncryptedUserToFirebase } from './helpers';
+import { addEncryptedUserToFirebase, findUsernameOnFirebase } from './helpers';
 import styled from 'styled-components';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, notification } from 'antd';
 import { FormItems } from './helpers';
 const FormItem = Form.Item;
 
@@ -61,18 +61,28 @@ class RetrieveWithPrivateKey extends PureComponent {
 
   handleSubmit = async (username, password, privateKey) => {
     this.setState({ loading: true });
-    let wallet = this.props.web3.eth.accounts.privateKeyToAccount(`0x${privateKey}`);
 
-    let jsonWallet = await wallet.encrypt(password, {});
+    let isUnique = await findUsernameOnFirebase(username);
+    if (isUnique) {
+      let wallet = this.props.web3.eth.accounts.privateKeyToAccount(`0x${privateKey}`);
 
-    // optimistic frontend update
-    this.props.updateTitle(jsonWallet);
-    try {
-      addEncryptedUserToFirebase(username, password, jsonWallet);
-    } catch (err) {
+      let jsonWallet = await wallet.encrypt(password, {});
+
+      // optimistic frontend update
+      this.props.updateTitle(jsonWallet);
+      try {
+        addEncryptedUserToFirebase(username, password, jsonWallet);
+      } catch (err) {
+        this.setState({ loading: false });
+        // revert frontend update if something fails here
+        console.log('err', err);
+      }
+    } else {
       this.setState({ loading: false });
-      // revert frontend update if something fails here
-      console.log('err', err);
+      notification['warning']({
+        message: 'Pick another Pirate name, yer scallywag!!',
+        description: `Looks like one of our trecherous crew has already claimed that name for their ownsome.`,
+      });
     }
   };
 

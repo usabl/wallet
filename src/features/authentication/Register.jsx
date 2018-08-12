@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { addEncryptedUserToFirebase } from './helpers';
-import { Form, Button } from 'antd';
+import { addEncryptedUserToFirebase, findUsernameOnFirebase } from './helpers';
+import { Form, Button, notification } from 'antd';
 import { FormItems } from './helpers';
 
 const Container = styled.div`
@@ -25,32 +25,31 @@ class Tx extends PureComponent {
     loading: false,
   };
 
-  // addUser: function(username, password, jsonWallet, success, error) {
-  //     let existingUser = this.users.filter(
-  //         u => u.username === username)[0];
-  //     if (!existingUser) {
-  //         let user = {username, password, jsonWallet};
-  //         this.users.push(user);
-  //         success(user);
-  //     }
-  //     else
-  //         error("Username unavailable: " + username);
-  // }
+  checkIfUserExists = user => {};
 
   handleSubmit = async (username, password) => {
     this.setState({ loading: true });
-    let wallet = this.props.web3.eth.accounts.create();
 
-    let jsonWallet = await wallet.encrypt(password, {});
+    let isUnique = await findUsernameOnFirebase(username);
+    if (isUnique) {
+      let wallet = this.props.web3.eth.accounts.create();
+      let jsonWallet = await wallet.encrypt(password, {});
 
-    // optimistic frontend update
-    this.props.updateTitle(jsonWallet);
-    try {
-      addEncryptedUserToFirebase(username, password, jsonWallet);
-    } catch (err) {
+      // optimistic frontend update
+      this.props.updateTitle(jsonWallet);
+      try {
+        addEncryptedUserToFirebase(username, password, jsonWallet);
+      } catch (err) {
+        this.setState({ loading: false });
+        // revert frontend update if something fails here
+        console.log('err', err);
+      }
+    } else {
       this.setState({ loading: false });
-      // revert frontend update if something fails here
-      console.log('err', err);
+      notification['warning']({
+        message: 'Pick another Pirate name, yer scallywag!!',
+        description: `Looks like one of our trecherous crew has already claimed that name for their ownsome.`,
+      });
     }
   };
 

@@ -54,15 +54,15 @@ class App extends PureComponent {
   state = {
     title: 'Welcome to Usabl',
     auth: false,
-    balance: '',
-    web3: null
+    balance: '🎉',
+    web3: null,
   };
 
   componentWillMount() {
     getWeb3
       .then(results => {
         this.setState({
-          web3: results.web3
+          web3: results.web3,
         });
         // Instantiate contract once web3 provided.
         // this.instantiateContract();
@@ -77,7 +77,7 @@ class App extends PureComponent {
     this.setState(() => ({
       title: `0x${jsonWallet.address}`,
       auth: true,
-      balance
+      balance,
     }));
   };
 
@@ -86,7 +86,7 @@ class App extends PureComponent {
     this.setState(() => ({
       balance,
       title: `0x${user.jsonWallet.address}`,
-      auth: true
+      auth: true,
     }));
   };
 
@@ -94,7 +94,7 @@ class App extends PureComponent {
     this.setState(() => ({
       title: 'Welcome to Usabl',
       auth: false,
-      balance: ''
+      balance: '',
     }));
 
   render() {
@@ -104,17 +104,9 @@ class App extends PureComponent {
         <Navbar title={title} balance={balance} />
 
         {!auth ? (
-          <LoggedOut
-            updateTitle={this.updateTitle}
-            web3={this.state.web3}
-            setUser={this.setUser}
-          />
+          <LoggedOut updateTitle={this.updateTitle} web3={this.state.web3} setUser={this.setUser} />
         ) : (
-          <LoggedIn
-            logout={this.logout}
-            web3={this.state.web3}
-            title={this.state.title}
-          />
+          <LoggedIn logout={this.logout} web3={this.state.web3} title={this.state.title} />
         )}
       </Wrapper>
     );

@@ -24,3 +24,20 @@ export const FormItems = ({ type, handleChange }) => (
     <Input placeholder={type} onChange={e => handleChange(type, e.target.value)} required />
   </FormItem>
 );
+
+export const findUserOnFirebase = async (username, password) =>
+  await db
+    .collection('users')
+    .where('username', '==', username)
+    .where('password', '==', password)
+    .get()
+    .then(collection => collection.docs.map(doc => doc.data()))
+    .then(users => users[0]);
+
+export const findUsernameOnFirebase = async username =>
+  await db
+    .collection('users')
+    .where('username', '==', username)
+    .get()
+    .then(collection => collection.docs.map(doc => doc.data()))
+    .then(users => users.length === 0);
