@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-latest": "^6.24.1",
     "antd": "^3.8.0",
     "crypto-js": "^3.1.9-1",
     "firebase": "^5.3.1",
@@ -16,9 +18,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "babel src -d build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "babel": {
+    "presets": ["latest"]
   },
   "devDependencies": {
     "eslint-plugin-react": "^7.10.0",
