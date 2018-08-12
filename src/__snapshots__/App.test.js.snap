@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TX modal matches snapshot 1`] = `
+<nav
+  class="sc-bxivhb cEOKjk"
+  data-testid="navbar"
+>
+  <h1>
+    Your address is
+  </h1>
+  <h2
+    class="sc-ifAKCX gmEbVI"
+  >
+    test title
+  </h2>
+  <div>
+    <div
+      class="sc-EHOje hXnmrd"
+    >
+      2
+    </div>
+  </div>
+</nav>
+`;
+
+exports[`nav matches snapshot 1`] = `
+<nav
+  class="sc-bxivhb cEOKjk"
+  data-testid="navbar"
+>
+  <h2
+    class="sc-ifAKCX gmEbVI"
+  >
+    test title
+  </h2>
+  <div>
+    <div
+      class="sc-EHOje hXnmrd"
+    >
+      2
+    </div>
+  </div>
+</nav>
+`;
