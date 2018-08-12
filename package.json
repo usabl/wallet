@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-latest": "^6.24.1",
     "crypto-js": "^3.1.9-1",
     "firebase": "^5.3.1",
     "react": "^16.4.2",
@@ -14,11 +16,32 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "babel src -d build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
+  "babel": {
+    "presets": ["latest"]
+  }
   "devDependencies": {
     "jest": "^23.5.0"
-  }
+  },
+  "description": "Making ethereum usable with a client side ethereum wallet",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usabl/wallet.git"
+  },
+  "keywords": [
+    "ethereum",
+    "clientside",
+    "wallet",
+    "usable"
+  ],
+  "author": "Josh Pitzalis, Akshay Iyer, Sumukh Shetty",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/usabl/wallet/issues"
+  },
+  "homepage": "https://github.com/usabl/wallet#readme"
 }
