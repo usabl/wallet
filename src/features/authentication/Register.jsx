@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { db } from '../constants/firebase';
-import encrypt from 'crypto-js/hmac-sha256';
 import { Input, Button } from 'antd';
 import styled from 'styled-components';
+import { Form } from 'antd';
+import { encryptBackendPassword, addUserToFirebase } from './helpers';
+const FormItem = Form.Item;
 
 const Container = styled.div`
   display: flex;
@@ -24,12 +25,6 @@ class ComponentName extends PureComponent {
     title: 'Welcome to Usabl'
   };
 
-  // find: function(username, password) {
-  //     let matchingUsers = this.users.filter(
-  //         u => u.username === username && u.password === password);
-  //     return matchingUsers[0];
-  // },
-
   // addUser: function(username, password, jsonWallet, success, error) {
   //     let existingUser = this.users.filter(
   //         u => u.username === username)[0];
@@ -42,11 +37,6 @@ class ComponentName extends PureComponent {
   //         error("Username unavailable: " + username);
   // }
 
-  addUserToFirebase = (username, password, jsonWallet) => {
-    let user = { username, password, jsonWallet };
-    db.collection('users').add(user);
-  };
-
   handleSubmit = async (username, walletPassword) => {
     let wallet = this.props.web3.eth.accounts.create();
 
@@ -55,8 +45,8 @@ class ComponentName extends PureComponent {
     // optimistic frontend update
     this.props.updateTitle(jsonWallet);
     try {
-      let backendPassword = encrypt(username, walletPassword).toString();
-      this.addUserToFirebase(username, backendPassword, jsonWallet);
+      let backendPassword = encryptBackendPassword(username, walletPassword);
+      addUserToFirebase(username, backendPassword, jsonWallet);
     } catch (err) {
       // revert frontend update if something fails here
       console.log('err', err);
@@ -67,7 +57,7 @@ class ComponentName extends PureComponent {
 
   render() {
     return (
-      <form
+      <Form
         onSubmit={e => {
           e.preventDefault();
           this.handleSubmit(this.state.username, this.state.walletPassword);
@@ -75,19 +65,25 @@ class ComponentName extends PureComponent {
       >
         <h2>Register</h2>
         <Container>
-          <Input
-            placeholder="username"
-            onChange={e => this.handleChange('username', e.target.value)}
-          />
-          <Input
-            placeholder="password"
-            onChange={e => this.handleChange('walletPassword', e.target.value)}
-          />
+          <FormItem>
+            <Input
+              placeholder="username"
+              onChange={e => this.handleChange('username', e.target.value)}
+            />
+          </FormItem>
+          <FormItem>
+            <Input
+              placeholder="password"
+              onChange={e =>
+                this.handleChange('walletPassword', e.target.value)
+              }
+            />
+          </FormItem>
         </Container>
         <Button type="primary" htmlType="submit">
           Submit
         </Button>
-      </form>
+      </Form>
     );
   }
 }

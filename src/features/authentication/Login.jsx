@@ -1,9 +1,47 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import encrypt from 'crypto-js/hmac-sha256';
-import { db } from '../constants/firebase';
+import { db } from '../../constants/firebase';
 import styled from 'styled-components';
 import { Input, Button } from 'antd';
+
+import { Form } from 'antd';
+const FormItem = Form.Item;
+
+const LoginForm = ({
+  username,
+  walletPassword,
+  handleSubmit,
+  handleChange
+}) => (
+  <Form
+    onSubmit={e => {
+      e.preventDefault();
+      handleSubmit(username, walletPassword);
+    }}
+  >
+    <Container>
+      <FormItem>
+        <Input
+          type="text"
+          placeholder="username"
+          onChange={e => handleChange('username', e.target.value)}
+        />
+      </FormItem>
+      <FormItem>
+        <Input
+          type="password"
+          placeholder="password"
+          onChange={e => handleChange('walletPassword', e.target.value)}
+        />
+      </FormItem>
+    </Container>
+
+    <Button type="primary" htmlType="submit">
+      Submit
+    </Button>
+  </Form>
+);
 
 const Container = styled.div`
   display: flex;
@@ -49,33 +87,15 @@ class Login extends PureComponent {
 
   render() {
     return (
-      <div className="Login">
+      <Fragment>
         <h2>Login</h2>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            this.handleSubmit(this.state.username, this.state.walletPassword);
-          }}
-        >
-          <Container>
-            <Input
-              type="text"
-              placeholder="username"
-              onChange={e => this.handleChange('username', e.target.value)}
-            />
-            <Input
-              type="password"
-              placeholder="password"
-              onChange={e =>
-                this.handleChange('walletPassword', e.target.value)
-              }
-            />
-          </Container>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </form>
-      </div>
+        <LoginForm
+          handleSubmit={this.handleSubmit}
+          handleChange={this.handleChange}
+          username={this.state.username}
+          walletPassword={this.state.walletPassword}
+        />
+      </Fragment>
     );
   }
 }

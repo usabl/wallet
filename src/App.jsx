@@ -1,12 +1,39 @@
 import React, { PureComponent, Fragment } from 'react';
-import Login from './components/Login';
-import Register from './components/Register';
+import Login from './features/authentication/Login';
+import Register from './features/authentication/Register';
+import RetrieveWithPrivateKey from './features/authentication/Retrieve';
 import Navbar from './components/Nav';
 import styled from 'styled-components';
 import getWeb3 from './constants/web3';
-import RetrieveWithPrivateKey from './components/Retrieve';
-import Tx from './components/Tx';
+import Tx from './features/transactions/Tx';
 import { Button } from 'antd';
+
+const LoggedIn = ({ logout, web3, title }) => (
+  <Fragment>
+    <br />
+    <br />
+    <Button type="danger" size="small" onClick={logout}>
+      Logout
+    </Button>
+    <br />
+    <br />
+    <br />
+    <br />
+    <Tx web3={web3} title={title} />
+  </Fragment>
+);
+
+const LoggedOut = ({ updateTitle, web3, setUser }) => (
+  <Fragment>
+    <Register updateTitle={updateTitle} web3={web3} />
+    <br />
+    <br />
+    <Login updateTitle={updateTitle} setUser={setUser} web3={web3} />
+    <br />
+    <br />
+    <RetrieveWithPrivateKey updateTitle={updateTitle} web3={web3} />
+  </Fragment>
+);
 
 const Wrapper = styled.div`
   text-align: center;
@@ -53,7 +80,11 @@ class App extends PureComponent {
   };
 
   logout = () =>
-    this.setState(() => ({ title: 'Welcome to Usabl', auth: false }));
+    this.setState(() => ({
+      title: 'Welcome to Usabl',
+      auth: false,
+      balance: ''
+    }));
 
   render() {
     let { auth, title, balance } = this.state;
@@ -61,35 +92,17 @@ class App extends PureComponent {
       <Wrapper>
         <Navbar title={title} balance={balance} />
         {!auth ? (
-          <Fragment>
-            <Register updateTitle={this.updateTitle} web3={this.state.web3} />
-            <br />
-            <br />
-            <Login
-              updateTitle={this.updateTitle}
-              setUser={this.setUser}
-              web3={this.state.web3}
-            />
-            <br />
-            <br />
-            <RetrieveWithPrivateKey
-              updateTitle={this.updateTitle}
-              web3={this.state.web3}
-            />
-          </Fragment>
+          <LoggedOut
+            updateTitle={this.updateTitle}
+            web3={this.state.web3}
+            setUser={this.setUser}
+          />
         ) : (
-          <Fragment>
-            <br />
-            <br />
-            <Button type="danger" size="small" onClick={this.logout}>
-              Logout
-            </Button>
-            <br />
-            <br />
-            <br />
-            <br />
-            <Tx web3={this.state.web3} title={this.state.title} />
-          </Fragment>
+          <LoggedIn
+            logout={this.logout}
+            web3={this.state.web3}
+            title={this.state.title}
+          />
         )}
       </Wrapper>
     );
