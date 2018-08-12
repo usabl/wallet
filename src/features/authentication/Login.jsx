@@ -11,7 +11,8 @@ const LoginForm = ({
   username,
   walletPassword,
   handleSubmit,
-  handleChange
+  handleChange,
+  loading
 }) => (
   <Form
     onSubmit={e => {
@@ -24,7 +25,7 @@ const LoginForm = ({
       <FormItems type="password" handleChange={handleChange} />
     </Container>
 
-    <Button type="primary" htmlType="submit">
+    <Button type="primary" htmlType="submit" loading={loading}>
       Submit
     </Button>
   </Form>
@@ -46,7 +47,8 @@ class Login extends PureComponent {
 
   state = {
     username: '',
-    walletPassword: ''
+    walletPassword: '',
+    loading: false
   };
 
   findUserOnFirebase = async (username, password) =>
@@ -59,6 +61,7 @@ class Login extends PureComponent {
       .then(users => users[0]);
 
   handleSubmit = async (username, walletPassword) => {
+    this.setState({ loading: true });
     try {
       let backendPassword = encrypt(username, walletPassword).toString();
       let user = await this.findUserOnFirebase(username, backendPassword);
@@ -66,6 +69,7 @@ class Login extends PureComponent {
       this.props.setUser(user);
     } catch (err) {
       // revert frontend update if something fails here
+      this.setState({ loading: false });
       console.log('err', err);
     }
   };
@@ -81,6 +85,7 @@ class Login extends PureComponent {
           handleChange={this.handleChange}
           username={this.state.username}
           walletPassword={this.state.walletPassword}
+          loading={this.state.loading}
         />
       </Fragment>
     );

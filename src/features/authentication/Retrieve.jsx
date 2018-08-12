@@ -11,7 +11,8 @@ const PrivateKeyForm = ({
   walletPassword,
   privateKey,
   handleSubmit,
-  handleChange
+  handleChange,
+  loading,
 }) => (
   <Form
     onSubmit={e => {
@@ -21,9 +22,7 @@ const PrivateKeyForm = ({
   >
     <Container>
       <FormItems type="username" handleChange={handleChange} />
-
       <FormItems type="password" handleChange={handleChange} />
-
       <FormItem>
         <Input
           type="text"
@@ -33,7 +32,7 @@ const PrivateKeyForm = ({
         />
       </FormItem>
     </Container>
-    <Button type="primary" htmlType="submit">
+    <Button type="primary" htmlType="submit" loading={loading}>
       Submit
     </Button>
   </Form>
@@ -50,20 +49,19 @@ const Container = styled.div`
 class RetrieveWithPrivateKey extends PureComponent {
   static propTypes = {
     retieveUser: PropTypes.func.isRequired,
-    web3: PropTypes.object
+    web3: PropTypes.object,
   };
 
   state = {
     username: '',
     walletPassword: '',
-    privateKey:
-      '388c684f0ba1ef5017716adb5d21a053ea8e90277d0868337519f97bede61418'
+    privateKey: '',
+    loading: false,
   };
 
   handleSubmit = async (username, walletPassword, privateKey) => {
-    let wallet = this.props.web3.eth.accounts.privateKeyToAccount(
-      `0x${privateKey}`
-    );
+    this.setState({ loading: true });
+    let wallet = this.props.web3.eth.accounts.privateKeyToAccount(`0x${privateKey}`);
 
     let jsonWallet = await wallet.encrypt(walletPassword, {});
 
@@ -72,6 +70,7 @@ class RetrieveWithPrivateKey extends PureComponent {
     try {
       addEncryptedUserToFirebase(username, walletPassword, jsonWallet);
     } catch (err) {
+      this.setState({ loading: false });
       // revert frontend update if something fails here
       console.log('err', err);
     }
@@ -89,6 +88,7 @@ class RetrieveWithPrivateKey extends PureComponent {
           privateKey={this.state.privateKey}
           handleSubmit={this.handleSubmit}
           handleChange={this.handleChange}
+          loading={this.state.loading}
         />
       </div>
     );

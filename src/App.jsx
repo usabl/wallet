@@ -7,31 +7,40 @@ import styled from 'styled-components';
 import getWeb3 from './constants/web3';
 import Tx from './features/transactions/Tx';
 import { Button } from 'antd';
+import { Tabs } from 'antd';
+const TabPane = Tabs.TabPane;
 
 const LoggedIn = ({ logout, web3, title }) => (
   <Fragment>
-    <br />
-    <br />
-    <Button type="danger" size="small" onClick={logout}>
-      Logout
-    </Button>
-    <br />
-    <br />
-    <br />
-    <br />
-    <Tx web3={web3} title={title} />
+    <Tabs defaultActiveKey="2">
+      <TabPane tab="Logout" key="1">
+        <Button type="danger" size="small" onClick={logout}>
+          Logout
+        </Button>
+      </TabPane>
+      <TabPane tab="Click" key="2">
+        <Tx web3={web3} title={title} />
+      </TabPane>
+      <TabPane tab="History" key="3">
+        I'm a table
+      </TabPane>
+    </Tabs>
   </Fragment>
 );
 
 const LoggedOut = ({ updateTitle, web3, setUser }) => (
   <Fragment>
-    <Register updateTitle={updateTitle} web3={web3} />
-    <br />
-    <br />
-    <Login updateTitle={updateTitle} setUser={setUser} web3={web3} />
-    <br />
-    <br />
-    <RetrieveWithPrivateKey updateTitle={updateTitle} web3={web3} />
+    <Tabs defaultActiveKey="2">
+      <TabPane tab="Register" key="1">
+        <Register updateTitle={updateTitle} web3={web3} />
+      </TabPane>
+      <TabPane tab="Login" key="2">
+        <Login updateTitle={updateTitle} setUser={setUser} web3={web3} />
+      </TabPane>
+      <TabPane tab="Forgot?" key="3">
+        <RetrieveWithPrivateKey updateTitle={updateTitle} web3={web3} />
+      </TabPane>
+    </Tabs>
   </Fragment>
 );
 
@@ -44,14 +53,14 @@ class App extends PureComponent {
     title: 'Welcome to Usabl',
     auth: false,
     balance: '',
-    web3: null
+    web3: null,
   };
 
   componentWillMount() {
     getWeb3
       .then(results => {
         this.setState({
-          web3: results.web3
+          web3: results.web3,
         });
         // Instantiate contract once web3 provided.
         // this.instantiateContract();
@@ -66,7 +75,7 @@ class App extends PureComponent {
     this.setState(() => ({
       title: `0x${jsonWallet.address}`,
       auth: true,
-      balance
+      balance,
     }));
   };
 
@@ -75,7 +84,7 @@ class App extends PureComponent {
     this.setState(() => ({
       balance,
       title: `0x${user.jsonWallet.address}`,
-      auth: true
+      auth: true,
     }));
   };
 
@@ -83,7 +92,7 @@ class App extends PureComponent {
     this.setState(() => ({
       title: 'Welcome to Usabl',
       auth: false,
-      balance: ''
+      balance: '',
     }));
 
   render() {
@@ -92,17 +101,9 @@ class App extends PureComponent {
       <Wrapper>
         <Navbar title={title} balance={balance} />
         {!auth ? (
-          <LoggedOut
-            updateTitle={this.updateTitle}
-            web3={this.state.web3}
-            setUser={this.setUser}
-          />
+          <LoggedOut updateTitle={this.updateTitle} web3={this.state.web3} setUser={this.setUser} />
         ) : (
-          <LoggedIn
-            logout={this.logout}
-            web3={this.state.web3}
-            title={this.state.title}
-          />
+          <LoggedIn logout={this.logout} web3={this.state.web3} title={this.state.title} />
         )}
       </Wrapper>
     );
