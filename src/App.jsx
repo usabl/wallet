@@ -52,7 +52,7 @@ class App extends PureComponent {
   state = {
     title: 'Welcome to Usabl',
     auth: false,
-    balance: '',
+    balance: '🎉',
     web3: null,
   };
 
