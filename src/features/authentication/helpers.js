@@ -23,6 +23,7 @@ export const FormItems = ({ type, handleChange }) => (
   <FormItem>
     <Input
       placeholder={type}
+      type={type === 'password' ? 'password' : 'text'}
       onChange={e => handleChange(type, e.target.value)}
       required
     />

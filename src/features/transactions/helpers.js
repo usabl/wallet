@@ -30,7 +30,7 @@ export const matchPasswords = async (username, password) => {
       console.log('users', users);
       return users[0];
     });
-  console.log('a', backendPassword, passwordToMatch);
+
   if (backendPassword === passwordToMatch) {
     return true;
   }
