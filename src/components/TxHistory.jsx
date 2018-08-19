@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import getWeb3 from '../constants/web3';
 
 class TxHistory extends Component {

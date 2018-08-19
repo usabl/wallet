@@ -20,6 +20,6 @@ firebase
     db = firebase.firestore();
   })
   .catch(err => {
-    console.log(err.code);
+    console.error(err.code, err);
     return firebase.firestore();
   });

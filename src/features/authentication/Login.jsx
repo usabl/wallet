@@ -11,12 +11,13 @@ const LoginForm = ({
   password,
   handleSubmit,
   handleChange,
-  loading
+  loading,
+  history
 }) => (
   <Form
-    onSubmit={e => {
+    onSubmit={async e => {
       e.preventDefault();
-      handleSubmit(username, password);
+      await handleSubmit(username, password);
     }}
   >
     <Container>
@@ -60,7 +61,7 @@ class Login extends PureComponent {
       } else {
         notification['error']({
           message: 'Aaarrgh, No Pirates by that name here, matey!',
-          description: `You'll be wanting to climbin aboard I suppose? Head to the Register page for adventure and treasures. `,
+          description: `You'll be wanting to climbin aboard I suppose? Head to the Register page for adventure and treasures. `
         });
       }
     } catch (err) {

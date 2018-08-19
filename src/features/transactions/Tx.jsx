@@ -75,7 +75,7 @@ class Dialogue extends PureComponent {
     visible: false,
     count: null,
     showAdvanced: false,
-    gas: 0,
+    gas: 30,
     gasprices: ['', '', '', ''],
     passwordConfirm: '',
     actualPrice: 0,
@@ -84,25 +84,29 @@ class Dialogue extends PureComponent {
   showModal = () => {
     this.setState({
       visible: true,
+      loading: false,
     });
   };
 
   closeModal = () =>
     this.setState({
       visible: false,
+      loading: false,
     });
 
-  handleOk = () => {
-    this.incrementCounter(this.state.passwordConfirm);
+  handleOk = async () => {
+    await this.incrementCounter(this.state.passwordConfirm);
     this.setState({
       visible: false,
       passwordConfirm: '',
+      loading: false,
     });
   };
 
   handleCancel = () =>
     this.setState({
       showAdvanced: true,
+      loading: false,
     });
 
   handleChange = (field, value) => this.setState({ [field]: value });
@@ -145,7 +149,7 @@ class Dialogue extends PureComponent {
           counterInstance = instance;
           return counterInstance.increment.call({
             from: this.props.title,
-            gas: this.state.gas,
+            gas: 200000,
           });
         })
         .then(result => {
@@ -166,6 +170,21 @@ class Dialogue extends PureComponent {
       return;
     }
   };
+
+  // export const set = (payload, added) => state => ({
+  //   tx: !added
+  //     ? [payload, ...state.oldstate]
+  //     : state.realsies.filter(_id => _id !== payload.id),
+  // });
+
+  // handleTxOptimistically = payload => {
+  //   this.setState(set(payload, false));
+  //   try {
+  //     mainThing(payload);
+  //   } catch (error) {
+  //     this.setState(set(payload, true));
+  //   }
+  // };
 
   async componentDidMount() {
     let gasprice = await fetch('https://www.etherchain.org/api/gasPriceOracle').then(blob =>

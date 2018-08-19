@@ -12,7 +12,7 @@ const PrivateKeyForm = ({
   privateKey,
   handleSubmit,
   handleChange,
-  loading,
+  loading
 }) => (
   <Form
     onSubmit={e => {
@@ -48,15 +48,15 @@ const Container = styled.div`
 
 class RetrieveWithPrivateKey extends PureComponent {
   static propTypes = {
-    retieveUser: PropTypes.func.isRequired,
-    web3: PropTypes.object,
+    retieveUser: PropTypes.func,
+    web3: PropTypes.object
   };
 
   state = {
     username: '',
     password: '',
     privateKey: '',
-    loading: false,
+    loading: false
   };
 
   handleSubmit = async (username, password, privateKey) => {
@@ -64,7 +64,9 @@ class RetrieveWithPrivateKey extends PureComponent {
 
     let isUnique = await findUsernameOnFirebase(username);
     if (isUnique) {
-      let wallet = this.props.web3.eth.accounts.privateKeyToAccount(`0x${privateKey}`);
+      let wallet = this.props.web3.eth.accounts.privateKeyToAccount(
+        `0x${privateKey}`
+      );
 
       let jsonWallet = await wallet.encrypt(password, {});
 
@@ -81,7 +83,7 @@ class RetrieveWithPrivateKey extends PureComponent {
       this.setState({ loading: false });
       notification['warning']({
         message: 'Pick another Pirate name, yer scallywag!!',
-        description: `Looks like one of our trecherous crew has already claimed that name for their ownsome.`,
+        description: `Looks like one of our trecherous crew has already claimed that name for their ownsome.`
       });
     }
   };
