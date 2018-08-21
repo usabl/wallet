@@ -35,7 +35,7 @@ class Navbar extends PureComponent {
   render() {
     let { title, balance } = this.props;
     return (
-      <Nav data-testId="navbar">
+      <Nav data-testid="navbar">
         <Title>{title}</Title>
         <div>
           <Pill>{balance}</Pill>

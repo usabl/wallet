@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import Login from './features/authentication/Login';
 import Register from './features/authentication/Register';
 import RetrieveWithPrivateKey from './features/authentication/Retrieve';
@@ -10,6 +10,7 @@ import Tx from './features/transactions/Tx';
 import { Button } from 'antd';
 import { Tabs } from 'antd';
 import SecondFactor from './features/authentication/SecondFactorAuth';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 const TabPane = Tabs.TabPane;
 
@@ -54,20 +55,21 @@ const Wrapper = styled.div`
   text-align: center;
 `;
 
-class App extends PureComponent {
+class App extends Component {
   state = {
     title: 'Welcome to Usabl',
     auth: false,
     balance: '🎉',
     web3: null,
     username: ''
+  
   };
 
   componentWillMount() {
     getWeb3
       .then(results => {
         this.setState({
-          web3: results.web3,
+          web3: results.web3
         });
       })
       .catch(() => {
@@ -80,8 +82,9 @@ class App extends PureComponent {
     this.setState(() => ({
       title: `0x${jsonWallet.address}`,
       auth: true,
-      balance,
+      balance
     }));
+    this.props.history.push('/dashboard');
   };
 
   setUser = async user => {
@@ -92,39 +95,79 @@ class App extends PureComponent {
       auth: true,
       username: user.username
     }));
+    this.props.history.push('/dashboard');
   };
 
   logout = () =>
     this.setState(() => ({
       title: 'Welcome to Usabl',
       auth: false,
-      balance: '',
+      balance: ''
     }));
 
   render() {
-    let { auth, title, balance } = this.state;
+    let { auth, title, balance, redirectTo } = this.state;
+
     return (
-      <Wrapper data-testId="mainApp">
+      <Wrapper data-testid="mainApp">
         <Navbar title={title} balance={balance} />
-        {!auth ? (
-          <LoggedOut
-            data-testId="out"
+        <Switch>
+          <PropsRoute
+            path="/"
+            exact
+            component={LoggedOut}
+            authed={auth}
+            data-testid="out"
             updateTitle={this.updateTitle}
             web3={this.state.web3}
             setUser={this.setUser}
           />
-        ) : (
-          <LoggedIn
-            data-testId="in"
+          <PrivateRoute
+            authed={auth}
+            path="/dashboard"
+            component={LoggedIn}
+            data-testid="in"
             logout={this.logout}
             web3={this.state.web3}
             title={this.state.title}
             username={this.state.username}
           />
-        )}
+        </Switch>
       </Wrapper>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
+
+// These hoc components allow you to pass props into a route component
+const renderMergedProps = (component, ...rest) => {
+  const finalProps = Object.assign({}, ...rest);
+  return React.createElement(component, finalProps);
+};
+
+const PropsRoute = ({ component, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={routeProps => {
+        return renderMergedProps(component, routeProps, rest);
+      }}
+    />
+  );
+};
+
+const PrivateRoute = ({ component, authed, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={routeProps =>
+        authed === true ? (
+          renderMergedProps(component, routeProps, rest)
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};

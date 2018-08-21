@@ -9,7 +9,7 @@ export const encryptBackendPassword = (username, password) =>
   encrypt(username, password).toString();
 
 export const addUserToFirebase = (username, password, jsonWallet) => {
-  const user = { username, password, jsonWallet };
+  const user = { username, password, jsonWallet, verifiedbool: false };
   db.collection('users').add(user);
 };
 
@@ -59,6 +59,17 @@ export const addSecretToUserDb = async (username, secret) => {
   let userId = await getUserId(username);
   db.doc(`users/${userId}`).update({ secret });
 };
+
+export const addVerifiedToUserDb = async (username, verifiedbool) => {
+  let userId = await getUserId(username);
+  db.doc(`users/${userId}`).update({ verifiedbool });
+};
+
+export const getVerifiedBool = userId =>
+  db
+    .doc(`users/${userId}`)
+    .get()
+    .then(doc => doc.data().verifiedbool);
 
 export const getSecret = userId =>
   db
